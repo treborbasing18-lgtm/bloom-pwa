@@ -2,12 +2,24 @@ const CACHE_NAME = "bloom-cache-v1";
 const URLS_TO_CACHE = [
   "/bloom-pwa/",
   "/bloom-pwa/index.html"
-  // Add more like "/bloom-pwa/styles.css" if you create separate files
+  // Add more like "/bloom-pwa/ocean.mp3" if you upload audio files
 ];
 
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(URLS_TO_CACHE))
+  );
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
+    )
   );
 });
 
